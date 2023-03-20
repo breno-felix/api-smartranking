@@ -1,6 +1,12 @@
-import { Injectable, Inject, NotFoundException } from '@nestjs/common';
+import {
+  Injectable,
+  Inject,
+  NotFoundException,
+  BadRequestException,
+} from '@nestjs/common';
 import { Repository } from 'typeorm';
 import { CreatePlayerDto } from './dtos/create-player.dto';
+import { UpdatePlayerDto } from './dtos/update-player.dto';
 import { Player } from './entities/player.entity';
 
 @Injectable()
@@ -10,64 +16,59 @@ export class PlayersService {
     private readonly playerRepository: Repository<Player>,
   ) {}
 
-  async createUpdate(createPlayerDto: CreatePlayerDto): Promise<void> {
-    const { email } = createPlayerDto;
+  async create(createPlayerDto: CreatePlayerDto): Promise<Player> {
+    const { email, phoneNumber } = createPlayerDto;
 
-    const player = await this.playerRepository.findOne({ where: { email } });
+    const existPlayer = await this.playerRepository.findOne({
+      where: { email },
+    });
 
-    if (player) {
-      this.update(player, createPlayerDto);
-    } else {
-      this.create(createPlayerDto);
+    if (existPlayer) {
+      throw new BadRequestException(
+        `Player with e-mail ${email} already exist`,
+      );
     }
+
+    const player = this.playerRepository.create(createPlayerDto);
+
+    return await this.playerRepository.save(player);
+  }
+
+  async update(id: string, updatePlayerDto: UpdatePlayerDto): Promise<void> {
+    const player = await this.playerRepository.findOne({ where: { id } });
+
+    if (!player) {
+      throw new NotFoundException(`Player with id ${id} not found`);
+    }
+
+    const { name } = updatePlayerDto;
+
+    player.name = name;
+
+    await this.playerRepository.save(player);
   }
 
   async findAll(): Promise<Player[]> {
     return await this.playerRepository.find();
   }
 
-  async findOne(email: string): Promise<Player> {
-    const player = await this.playerRepository.findOne({ where: { email } });
+  async findOne(id: string): Promise<Player> {
+    const player = await this.playerRepository.findOne({ where: { id } });
     if (!player) {
-      throw new NotFoundException(`Player with email ${email} not found`);
+      throw new NotFoundException(`Player with id ${id} not found`);
     }
     return player;
   }
 
-  async remove(email: string): Promise<void> {
+  async remove(id: string): Promise<void> {
     const player = await this.playerRepository.findOne({
-      where: { email },
+      where: { id },
     });
 
     if (!player) {
-      throw new NotFoundException(`Player with email ${email} not found`);
+      throw new NotFoundException(`Player with id ${id} not found`);
     }
 
     this.playerRepository.remove(player);
-  }
-
-  private async create(createPlayerDto: CreatePlayerDto): Promise<Player> {
-    const { phoneNumber, email, name } = createPlayerDto;
-
-    const player = this.playerRepository.create({
-      phoneNumber,
-      email,
-      name,
-      ranking: 'A',
-      positionRanking: 1,
-      urlPhoto: 'www.google.com.br/foto123.jpg',
-    });
-    return await this.playerRepository.save(player);
-  }
-
-  private async update(
-    player: Player,
-    createPlayerDto: CreatePlayerDto,
-  ): Promise<Player> {
-    const { name } = createPlayerDto;
-
-    player.name = name;
-
-    return await this.playerRepository.save(player);
   }
 }

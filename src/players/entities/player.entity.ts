@@ -20,13 +20,13 @@ export class Player {
   @Column()
   name: string;
 
-  @Column()
+  @Column({ nullable: true })
   ranking: string;
 
-  @Column('int')
+  @Column({ type: 'int', nullable: true })
   positionRanking: number;
 
-  @Column()
+  @Column({ nullable: true })
   urlPhoto: string;
 
   @CreateDateColumn()
