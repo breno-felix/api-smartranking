@@ -29,6 +29,16 @@ export class PlayersService {
       );
     }
 
+    const existPlayerTwo = await this.playerRepository.findOne({
+      where: { phoneNumber },
+    });
+
+    if (existPlayerTwo) {
+      throw new BadRequestException(
+        `Player with phoneNumber ${phoneNumber} already exist`,
+      );
+    }
+
     const player = this.playerRepository.create(createPlayerDto);
 
     return await this.playerRepository.save(player);
@@ -49,11 +59,14 @@ export class PlayersService {
   }
 
   async findAll(): Promise<Player[]> {
-    return await this.playerRepository.find();
+    return await this.playerRepository.find({ relations: { category: true } });
   }
 
   async findOne(id: string): Promise<Player> {
-    const player = await this.playerRepository.findOne({ where: { id } });
+    const player = await this.playerRepository.findOne({
+      where: { id },
+      relations: { category: true },
+    });
     if (!player) {
       throw new NotFoundException(`Player with id ${id} not found`);
     }

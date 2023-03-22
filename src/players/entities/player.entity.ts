@@ -1,9 +1,11 @@
+import { Category } from 'src/categories/entities/category.entity';
 import {
   Column,
   CreateDateColumn,
   UpdateDateColumn,
   Entity,
   PrimaryGeneratedColumn,
+  ManyToOne,
 } from 'typeorm';
 
 @Entity('players')
@@ -28,6 +30,11 @@ export class Player {
 
   @Column({ nullable: true })
   urlPhoto: string;
+
+  @ManyToOne(() => Category, (category) => category.players, {
+    cascade: ['insert', 'update'],
+  })
+  category: Category;
 
   @CreateDateColumn()
   created_at: Date;
