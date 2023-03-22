@@ -13,8 +13,7 @@ import { CategoriesService } from './categories.service';
 import { CreateCategoryDto } from './dtos/create-category.dto';
 import { UpdateCategoryDto } from './dtos/update-category.dto';
 import { Category } from './entities/category.entity';
-import { CategoriesValidationParametersPipe } from './pipes/categories-validation-parameters.pipe';
-
+import { ValidationParametersPipe } from '../common/pipes/validation-parameters.pipe';
 @Controller('api/v1/categories')
 export class CategoriesController {
   constructor(private readonly categoriesService: CategoriesService) {}
@@ -31,7 +30,7 @@ export class CategoriesController {
   @UsePipes(ValidationPipe)
   async update(
     @Body() updateCategoryDto: UpdateCategoryDto,
-    @Param('category', CategoriesValidationParametersPipe) category: string,
+    @Param('category', ValidationParametersPipe) category: string,
   ): Promise<void> {
     await this.categoriesService.update(category, updateCategoryDto);
   }
@@ -43,7 +42,7 @@ export class CategoriesController {
 
   @Get(':category')
   async findOne(
-    @Param('category', CategoriesValidationParametersPipe) category: string,
+    @Param('category', ValidationParametersPipe) category: string,
   ): Promise<Category> {
     return await this.categoriesService.findOne(category);
   }
