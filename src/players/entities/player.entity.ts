@@ -1,4 +1,5 @@
 import { Category } from 'src/categories/entities/category.entity';
+import { Challenge } from 'src/challenges/entities/challenge.entity';
 import {
   Column,
   CreateDateColumn,
@@ -6,6 +7,7 @@ import {
   Entity,
   PrimaryGeneratedColumn,
   ManyToOne,
+  OneToMany,
 } from 'typeorm';
 
 @Entity('players')
@@ -35,6 +37,12 @@ export class Player {
     cascade: ['insert', 'update'],
   })
   category: Category;
+
+  @OneToMany(() => Challenge, (challenge) => challenge.requester)
+  sentChallenges: Challenge[];
+
+  @OneToMany(() => Challenge, (challenge) => challenge.requested)
+  receivedChallenges: Challenge[];
 
   @CreateDateColumn()
   created_at: Date;
