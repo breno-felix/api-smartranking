@@ -1,3 +1,4 @@
+import { Category } from 'src/categories/entities/category.entity';
 import { Player } from 'src/players/entities/player.entity';
 import {
   Column,
@@ -14,32 +15,28 @@ export class Challenge {
   @PrimaryGeneratedColumn('uuid')
   id: string;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   challendeDateAndTime: Date;
 
-  @Column()
+  @Column({ type: 'timestamp' })
   requestDateAndTime: Date;
 
-  @Column()
+  @Column({ type: 'timestamp', nullable: true })
   responseDateAndTime: Date;
 
   @Column()
   status: string;
 
-  @Column()
-  category: string;
+  @ManyToOne(() => Category, (category) => category.challenges)
+  category: Category;
 
-  @ManyToOne(() => Player, (player) => player.sentChallenges, {
-    cascade: ['insert', 'update'],
-  })
+  @ManyToOne(() => Player, (player) => player.sentChallenges)
   requester: Player;
 
-  @ManyToOne(() => Player, (player) => player.receivedChallenges, {
-    cascade: ['insert', 'update'],
-  })
+  @ManyToOne(() => Player, (player) => player.receivedChallenges)
   requested: Player;
 
-  @Column('simple-json')
+  @Column({ type: 'simple-json', nullable: true })
   match: Match;
 
   @CreateDateColumn()

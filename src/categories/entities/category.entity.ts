@@ -1,3 +1,4 @@
+import { Challenge } from 'src/challenges/entities/challenge.entity';
 import { Player } from 'src/players/entities/player.entity';
 import {
   Column,
@@ -23,10 +24,11 @@ export class Category {
   @Column('simple-json')
   events: Event[];
 
-  @OneToMany(() => Player, (player) => player.category, {
-    cascade: ['insert', 'update'],
-  })
+  @OneToMany(() => Player, (player) => player.category)
   players: Player[];
+
+  @OneToMany(() => Challenge, (challenge) => challenge.category)
+  challenges: Challenge[];
 
   @CreateDateColumn()
   created_at: Date;

@@ -59,13 +59,12 @@ export class PlayersService {
   }
 
   async findAll(): Promise<Player[]> {
-    return await this.playerRepository.find({ relations: { category: true } });
+    return await this.playerRepository.find();
   }
 
   async findOne(id: string): Promise<Player> {
     const player = await this.playerRepository.findOne({
       where: { id },
-      relations: { category: true },
     });
     if (!player) {
       throw new NotFoundException(`Player with id ${id} not found`);

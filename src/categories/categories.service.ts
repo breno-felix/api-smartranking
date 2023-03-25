@@ -55,13 +55,13 @@ export class CategoriesService {
   }
 
   async findAll(): Promise<Category[]> {
-    return await this.categoryRepository.find({ relations: { players: true } });
+    return await this.categoryRepository.find({ relations: ['players'] });
   }
 
   async findOne(category: string): Promise<Category> {
     const existCategory = await this.categoryRepository.findOne({
       where: { category },
-      relations: { players: true },
+      relations: ['players'],
     });
     if (!existCategory) {
       throw new NotFoundException(`The category ${category} not found`);
@@ -82,10 +82,6 @@ export class CategoriesService {
     }
 
     const player = await this.playersService.findOne(player_id);
-
-    if (!existCategory.players) {
-      existCategory.players = [];
-    }
 
     existCategory.players.push(player);
 

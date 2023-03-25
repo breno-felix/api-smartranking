@@ -33,9 +33,7 @@ export class Player {
   @Column({ nullable: true })
   urlPhoto: string;
 
-  @ManyToOne(() => Category, (category) => category.players, {
-    cascade: ['insert', 'update'],
-  })
+  @ManyToOne(() => Category, (category) => category.players, { eager: true })
   category: Category;
 
   @OneToMany(() => Challenge, (challenge) => challenge.requester)
