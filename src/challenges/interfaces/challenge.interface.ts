@@ -2,7 +2,7 @@ import { Player } from 'src/players/entities/player.entity';
 import { ChallengeStatus } from './challenge-status.enum';
 
 export interface Challenge {
-  challendeDateAndTime: Date;
+  challengeDateAndTime: Date;
   requestDateAndTime: Date;
   responseDateAndTime: Date;
   requester: Player;

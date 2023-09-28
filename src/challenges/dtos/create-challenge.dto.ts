@@ -3,7 +3,7 @@ import { IsDateString, IsNotEmpty, IsUUID } from 'class-validator';
 export class CreateChallengeDto {
   @IsDateString()
   @IsNotEmpty()
-  challendeDateAndTime: Date;
+  challengeDateAndTime: Date;
 
   @IsNotEmpty()
   @IsUUID()

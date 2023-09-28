@@ -8,6 +8,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ChallengeStatus } from '../interfaces/challenge-status.enum';
 import { Match } from '../interfaces/challenge.interface';
 
 @Entity('challenges')
@@ -16,7 +17,7 @@ export class Challenge {
   id: string;
 
   @Column({ type: 'timestamp' })
-  challendeDateAndTime: Date;
+  challengeDateAndTime: Date;
 
   @Column({ type: 'timestamp' })
   requestDateAndTime: Date;
@@ -25,7 +26,7 @@ export class Challenge {
   responseDateAndTime: Date;
 
   @Column()
-  status: string;
+  status: ChallengeStatus;
 
   @ManyToOne(() => Category, (category) => category.challenges)
   category: Category;
